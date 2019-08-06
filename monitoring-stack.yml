@@ -1,0 +1,39 @@
+version: '3'
+
+networks:
+  monitoring_network:
+    external:
+      name: monitoring_network
+
+services:
+  node_exporter:
+    image: edvaldoszy/prometheus-node-exporter:0.18.1-alpine
+    hostname: '{{.Node.ID}}'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - 9100:9100
+    networks:
+      - monitoring_network
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.filesystem.ignored-fs-types=^(sys|proc|auto|cgroup|devpts|ns|au|fuse\.lxc|mqueue)(fs|)$$'
+    deploy:
+      mode: global
+
+  prometheus:
+    image: edvaldoszy/prometheus:2.11.1-alpine
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - monitoring_network
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
