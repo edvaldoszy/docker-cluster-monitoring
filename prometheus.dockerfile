@@ -10,9 +10,8 @@ ENV VERSION 2.11.1
 
 RUN wget https://github.com/prometheus/prometheus/releases/download/v${VERSION}/prometheus-${VERSION}.${OS}-${ARCH}.tar.gz && \
     tar -xvzf prometheus-${VERSION}.${OS}-${ARCH}.tar.gz && \
-    rm -f prometheus-${VERSION}.${OS}-${ARCH}.tar.gz
-
-RUN adduser -DH -s /bin/false prometheus && \
+    rm -f prometheus-${VERSION}.${OS}-${ARCH}.tar.gz && \
+    adduser -DH -s /bin/false prometheus && \
     mv prometheus-${VERSION}.${OS}-${ARCH} /etc/prometheus && \
     mkdir -p /var/lib/prometheus && \
     chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus && \
