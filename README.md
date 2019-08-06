@@ -16,7 +16,13 @@ AGENT_CLUSTER_ADDR=tasks.agent
 AGENT_SECRET=my-secret
 ```
 
-No terminal do cluster, faço deploy da stack com o comando:
+Crie agora a rede responsável pela conexão dos componentes do Portainer com o comando:
+
+```shell
+$ docker network create --scope swarm --driver overlay
+```
+
+No terminal do cluster, faça o deploy da stack com o comando:
 
 ```shell
 $ docker strack deploy -f portainer-stack.yml portainer
