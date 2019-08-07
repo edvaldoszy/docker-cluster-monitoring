@@ -1,0 +1,16 @@
+version: '3'
+
+networks:
+  monitoring_network:
+    external:
+      name: monitoring_network
+
+services:
+  api:
+    image: api-test:latest
+    ports:
+      - 3001:3001
+    networks:
+      - monitoring_network
+    deploy:
+      replicas: 1

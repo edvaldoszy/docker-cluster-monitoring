@@ -12,3 +12,10 @@ scrape_configs:
       - type: A
         port: 9100
         names: ['tasks.node_exporter']
+  
+  - job_name: api
+    metrics_path: '/swagger-stats/metrics'
+    dns_sd_configs:
+      - type: A
+        port: 3001
+        names: ['tasks.api']
