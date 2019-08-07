@@ -37,3 +37,19 @@ services:
       placement:
         constraints:
           - node.role == manager
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: 'masterkey'
+      GF_INSTALL_PLUGINS: 'grafana-clock-panel,grafana-piechart-panel,camptocamp-prometheus-alertmanager-datasource,vonage-status-panel'
+    ports:
+      - 3000:3000
+    networks:
+      - monitoring_network
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
