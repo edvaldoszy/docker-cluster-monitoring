@@ -7,10 +7,10 @@ networks:
 
 services:
   api:
-    image: api-test:latest
+    image: edvaldoszy/api-test:latest
     ports:
       - 3001:3001
     networks:
       - monitoring_network
     deploy:
-      replicas: 1
+      replicas: 4

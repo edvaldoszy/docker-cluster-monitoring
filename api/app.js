@@ -6,13 +6,11 @@ const swagger = require('swagger-stats');
 const axios = require('axios');
 const controller = require('./controller');
 
-
 const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
 app.use(helmet());
-app.use(swagger.getMiddleware());
 
 
 function randomRequestMethod() {
@@ -50,7 +48,5 @@ setInterval(() => {
 
 }, 500);
 
-// app.use(swagger.get)
 
-
-app.listen(3001, () => console.log('Server listening on port 3001'));
+module.exports = app;
