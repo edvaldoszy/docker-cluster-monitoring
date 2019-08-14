@@ -2,19 +2,20 @@ version: '3'
 
 networks:
   monitoring_network:
-    external:
-      name: monitoring_network
+    external: true
+
+volumes:
+  prometheus_data:
+  grafana_data:
 
 services:
   node_exporter:
     image: edvaldoszy/prometheus-node-exporter:0.18.1-alpine
-    hostname: '{{.Node.ID}}'
+    hostname: '{{.Node.Hostname}}'
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-    ports:
-      - 9100:9100
     networks:
       - monitoring_network
     command:
@@ -25,12 +26,42 @@ services:
     deploy:
       mode: global
 
+  cadvisor:
+    image: google/cadvisor:latest
+    hostname: '{{.Node.Hostname}}'
+    volumes:
+      - /:/rootfs:ro
+      - /sys:/sys:ro
+      - /var/run:/var/run:rw
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - monitoring_network
+    deploy:
+      mode: global
+
   prometheus:
     image: edvaldoszy/prometheus:2.11.1-alpine
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/var/lib/prometheus
     ports:
       - 9090:9090
+    networks:
+      - monitoring_network
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - grafana_data:/var/lib/grafana
+    env_file:
+      - ./env/grafana.env
+    ports:
+      - 3000:3000
     networks:
       - monitoring_network
     deploy:
